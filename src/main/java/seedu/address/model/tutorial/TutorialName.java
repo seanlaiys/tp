@@ -20,14 +20,14 @@ public class TutorialName {
      */
     public TutorialName(String value) {
         requireNonNull(value);
-        checkArgument(isValidTutorialNameName(value), MESSAGE_CONSTRAINTS);
+        checkArgument(isValidTutorialName(value), MESSAGE_CONSTRAINTS);
         name = value;
     }
 
     /**
      * Returns true if given String is a valid class name.
      */
-    public static boolean isValidTutorialNameName(String value) {
+    public static boolean isValidTutorialName(String value) {
         return value.matches(VALIDATION_REGEX);
     }
 

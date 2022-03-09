@@ -8,6 +8,7 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.tutorial.exceptions.DuplicateTutorialException;
+import seedu.address.model.tutorial.exceptions.TutorialNotFoundException;
 
 /**
  * A list of Tutorials that enforces the uniqueness between its elements and does not allow nulls.
@@ -44,6 +45,37 @@ public class UniqueTutorialList {
             throw new DuplicateTutorialException();
         }
         internalList.add(toAdd);
+    }
+
+    /**
+     * Removes the equivalent tutorial from the list.
+     * The tutorial must exist in the list.
+     */
+    public void remove(Tutorial toRemove) {
+        requireNonNull(toRemove);
+        if (!internalList.remove(toRemove)) {
+            throw new TutorialNotFoundException();
+        }
+    }
+
+    /**
+     * Replaces the tutorial {@code target} in the list with {@code editedTutorial}.
+     * {@code target} must exist in the list.
+     * The tutorial identity of {@code editedTutorial} must not be the same as another existing tutorial in the list.
+     */
+    public void setTutorial(Tutorial target, Tutorial editedTutorial) {
+        requireAllNonNull(target, editedTutorial);
+
+        int index = internalList.indexOf(target);
+        if (index == -1) {
+            throw new TutorialNotFoundException();
+        }
+
+        if (!target.isSameTutorial(editedTutorial) && contains(editedTutorial)) {
+            throw new DuplicateTutorialException();
+        }
+
+        internalList.set(index, editedTutorial);
     }
 
     /**

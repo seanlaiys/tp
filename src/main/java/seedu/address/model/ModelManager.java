@@ -13,6 +13,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Student;
+import seedu.address.model.tutorial.Tutorial;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -23,10 +24,12 @@ import seedu.address.model.person.Student;
 public class ModelManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
     private static final Predicate<Person> PREDICATE_SHOW_ALL_STUDENTS_IN_ADDRESSBOOK = Student::isStudent;
+    private static final Predicate<Tutorial> PREDICATE_SHOW_ALL_TUTORIAL_IN_ADDRESSBOOK = Tutorial::isTutorial;
 
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final FilteredList<Tutorial> filteredTutorials;
 
     /**
      * A list containing all Students in the address book.
@@ -37,6 +40,7 @@ public class ModelManager implements Model {
      * @see ObservableList
      */
     private final FilteredList<Person> allStudents;
+    private final FilteredList<Tutorial> allTutorials;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -49,7 +53,11 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        filteredTutorials = new FilteredList<>(this.addressBook.getTutorialList());
         allStudents = new FilteredList<>(this.addressBook.getPersonList(), PREDICATE_SHOW_ALL_STUDENTS_IN_ADDRESSBOOK);
+        allTutorials = new FilteredList<>(this.addressBook.getTutorialList(),
+                PREDICATE_SHOW_ALL_TUTORIAL_IN_ADDRESSBOOK);
+
     }
 
     public ModelManager() {
@@ -127,6 +135,30 @@ public class ModelManager implements Model {
         addressBook.setPerson(target, editedPerson);
     }
 
+    @Override
+    public boolean hasTutorial(Tutorial tutorial) {
+        requireNonNull(tutorial);
+        return addressBook.hasTutorial(tutorial);
+    }
+
+    @Override
+    public void deleteTutorial(Tutorial target) {
+        addressBook.removeTutorial(target);
+    }
+
+    @Override
+    public void addTutorial(Tutorial tutorial) {
+        addressBook.addTutorial(tutorial);
+        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+    }
+
+    @Override
+    public void setTutorial(Tutorial target, Tutorial editedTutorial) {
+        requireAllNonNull(target, editedTutorial);
+
+        addressBook.setTutorial(target, editedTutorial);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**
@@ -136,6 +168,15 @@ public class ModelManager implements Model {
     @Override
     public ObservableList<Person> getFilteredPersonList() {
         return filteredPersons;
+    }
+
+    /**
+     * Returns an unmodifiable view of the list of {@code Tutorial} backed by the internal list of
+     * {@code versionedAddressBook}
+     */
+    @Override
+    public ObservableList<Tutorial> getFilteredTutorialList() {
+        return filteredTutorials;
     }
 
     @Override

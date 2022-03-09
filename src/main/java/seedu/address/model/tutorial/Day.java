@@ -3,16 +3,15 @@ package seedu.address.model.tutorial;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
-import java.time.DayOfWeek;
-
 /**
  * Represents the day of week which a Tutorial is on in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidDay(String)}
  */
 public class Day {
-    public static final String MESSAGE_CONSTRAINTS = "Days should be provided as a number which is their position in "
-            + "the week (e.g. Monday should be provided as 1).";
-    public static final String VALIDATION_REGEX = "^[1-7]";
+    public static final String MESSAGE_CONSTRAINTS = "Days should be  spelt in full "
+            + "or with 3-letter abbreviation";
+    public static final String VALIDATION_REGEX = "(?i)(Monday|Tuesday|Wednesday|Thursday|"
+            + "Friday|Saturday|Sunday|Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
     public final String day;
 
     /**
@@ -23,14 +22,52 @@ public class Day {
     public Day(String value) {
         requireNonNull(value);
         checkArgument(isValidDay(value), MESSAGE_CONSTRAINTS);
-        day = DayOfWeek.of(Integer.parseInt(value)).toString();
+        day = setProperDay(value);
     }
 
     /**
-     * Returns true if given String represents an integer between 1 and 7.
+     * Returns true if given String represents any day of the week spelt in full or 3-letter abbreviation.
      */
-    public boolean isValidDay(String value) {
+    public static boolean isValidDay(String value) {
         return value.matches(VALIDATION_REGEX);
+    }
+
+    private String setProperDay(String day) {
+        String fullDay;
+        switch (day.toUpperCase()) {
+
+        case ("MON"):
+        case ("MONDAY"):
+            fullDay = "Monday";
+            break;
+        case ("TUE"):
+        case ("TUESDAY"):
+            fullDay = "Tuesday";
+            break;
+        case ("WED"):
+        case ("WEDNESDAY"):
+            fullDay = "Wednesday";
+            break;
+        case ("THU"):
+        case ("THURSDAY"):
+            fullDay = "Thursday";
+            break;
+        case ("FRI"):
+        case ("FRIDAY"):
+            fullDay = "Friday";
+            break;
+        case ("SAT"):
+        case ("SATURDAY"):
+            fullDay = "Saturday";
+            break;
+        case ("SUN"):
+        case ("SUNDAY"):
+            fullDay = "Sunday";
+            break;
+        default:
+            fullDay = "Monday";
+        }
+        return fullDay;
     }
 
     @Override

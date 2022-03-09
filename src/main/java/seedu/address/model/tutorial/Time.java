@@ -26,7 +26,7 @@ public class Time {
     /**
      * Returns true if given String represents a valid time of the day.
      */
-    public boolean isValidTime(String value) {
+    public static boolean isValidTime(String value) {
         return value.matches(VALIDATION_REGEX);
     }
 
