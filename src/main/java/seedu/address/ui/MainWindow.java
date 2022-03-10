@@ -32,6 +32,7 @@ public class MainWindow extends UiPart<Stage> {
 
     // Independent Ui parts residing in this Ui container
     private PersonListPanel personListPanel;
+    private TutorialListPanel tutorialListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
 
@@ -43,6 +44,9 @@ public class MainWindow extends UiPart<Stage> {
 
     @FXML
     private StackPane personListPanelPlaceholder;
+
+    @FXML
+    private StackPane tutorialListPanelPlaceholder;
 
     @FXML
     private StackPane resultDisplayPlaceholder;
@@ -121,6 +125,29 @@ public class MainWindow extends UiPart<Stage> {
 
         CommandBox commandBox = new CommandBox(this::executeCommand);
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
+
+    }
+
+    /**
+     * Hides the students
+     */
+    void handleClass() {
+        if (personListPanel != null) {
+            personListPanelPlaceholder.getChildren().remove(personListPanel.getRoot());
+        }
+        tutorialListPanel = new TutorialListPanel(logic.getFilteredTutorialList());
+        tutorialListPanelPlaceholder.getChildren().add(tutorialListPanel.getRoot());
+    }
+
+    /**
+     * Opens the help window or focuses on it if it's already opened.
+     */
+    void handlePersons() {
+        if (tutorialListPanel != null) {
+            tutorialListPanelPlaceholder.getChildren().remove(tutorialListPanel.getRoot());
+        }
+        personListPanel = new PersonListPanel(logic.getFilteredPersonList());
+        personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
     }
 
     /**
@@ -167,6 +194,10 @@ public class MainWindow extends UiPart<Stage> {
         return personListPanel;
     }
 
+    public TutorialListPanel getTutorialListPanel() {
+        return tutorialListPanel;
+    }
+
     /**
      * Executes the command and returns the result.
      *
@@ -174,6 +205,7 @@ public class MainWindow extends UiPart<Stage> {
      */
     private CommandResult executeCommand(String commandText) throws CommandException, ParseException {
         try {
+
             CommandResult commandResult = logic.execute(commandText);
             logger.info("Result: " + commandResult.getFeedbackToUser());
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
@@ -184,6 +216,12 @@ public class MainWindow extends UiPart<Stage> {
 
             if (commandResult.isExit()) {
                 handleExit();
+            }
+
+            if (commandResult.isClass()) {
+                handleClass();
+            } else {
+                handlePersons();
             }
 
             return commandResult;

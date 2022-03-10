@@ -5,6 +5,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DAY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TUTORIALNAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_VENUE;
+import static seedu.address.model.Model.PREDICATE_HIDE_ALL_PERSONS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_TUTORIALS;
 
 import javafx.collections.transformation.FilteredList;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -51,7 +53,9 @@ public class AddClassCommand extends Command {
         }
 
         model.addTutorial(toAdd);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd));
+        model.updateFilteredTutorialList(PREDICATE_SHOW_ALL_TUTORIALS);
+        model.updateFilteredPersonList(PREDICATE_HIDE_ALL_PERSONS);
+        return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd), true);
     }
 
     @Override
